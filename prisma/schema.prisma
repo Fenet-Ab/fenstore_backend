@@ -1,0 +1,140 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+model SupportMessage {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  message   String
+  isAdmin   Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  title     String
+  message   String
+  isRead    Boolean  @default(false)
+  type      String   // 'ORDER_UPDATE', 'NEW_ORDER'
+  orderId   String?  
+  link      String?  
+  createdAt DateTime @default(now())
+}
+
+model Order {
+  id             String      @id @default(uuid())
+  userId         String
+  totalPrice     Float
+  shippingAddress String?    // Added shipping address
+  paymentStatus  String      @default("PENDING")
+  deliveryStatus String      @default("NOT_DELIVERED")
+  createdAt      DateTime    @default(now())
+  txRef          String?
+  user           User        @relation(fields: [userId], references: [id])
+  items          OrderItem[]
+}
+
+model User {
+  id            String         @id @default(uuid())
+  name          String
+  email         String         @unique
+  password      String
+  createdAt     DateTime       @default(now())
+  role          Role           @default(USER)
+  loyaltyPoints Int            @default(0)
+  carts         Cart[]
+  likes         Like[]
+  orders        Order[]
+  ratings       Rating[]
+  notifications Notification[]
+  supportMessages SupportMessage[]
+}
+
+model OrderItem {
+  id         String   @id @default(uuid())
+  orderId    String
+  materialId String
+  quantity   Int
+  price      Float
+  material   Material @relation(fields: [materialId], references: [id])
+  order      Order    @relation(fields: [orderId], references: [id])
+}
+
+model Rating {
+  id         String   @id @default(uuid())
+  userId     String
+  materialId String
+  value      Int
+  comment    String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  material   Material @relation(fields: [materialId], references: [id])
+  user       User     @relation(fields: [userId], references: [id])
+
+  @@unique([userId, materialId])
+}
+
+model Like {
+  id         String   @id @default(uuid())
+  userId     String
+  materialId String
+  createdAt  DateTime @default(now())
+  material   Material @relation(fields: [materialId], references: [id])
+  user       User     @relation(fields: [userId], references: [id])
+
+  @@unique([userId, materialId])
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model Category {
+  id        String     @id @default(uuid())
+  name      String     @unique
+  materials Material[]
+}
+
+model Material {
+  id            String      @id @default(uuid())
+  title         String
+  description   String
+  imageUrl      String
+  categoryId    String
+  createdAt     DateTime    @default(now())
+  price         Float       @default(0)
+  averageRating Float?      @default(0)
+  ratingCount   Int         @default(0)
+  isDeleted     Boolean     @default(false)
+  cartItems     CartItem[]
+  likes         Like[]
+  category      Category    @relation(fields: [categoryId], references: [id])
+  orderItems    OrderItem[]
+  ratings       Rating[]
+}
+
+model Cart {
+  id     String     @id @default(uuid())
+  userId String
+  user   User       @relation(fields: [userId], references: [id])
+  items  CartItem[]
+}
+
+model CartItem {
+  id         String   @id @default(uuid())
+  cartId     String
+  materialId String
+  quantity   Int      @default(1)
+  cart       Cart     @relation(fields: [cartId], references: [id])
+  material   Material @relation(fields: [materialId], references: [id])
+}
