@@ -7,21 +7,39 @@ export class CartController {
     constructor(private readonly cartService: CartService) { }
     @Post('add')
     @UseGuards(JwtGuard)
-    addToCart(@Req() req, @Body('materialId') materialId: string) {
-        console.log("Add to cart - User:", req.user, "MaterialId:", materialId);
-        return this.cartService.addToCart(req.user.userId, materialId);
+    addToCart(
+        @Req() req,
+        @Body('materialId') materialId: string,
+        @Body('selectedSize') selectedSize?: string,
+        @Body('selectedColor') selectedColor?: string,
+        @Body('selectedStorage') selectedStorage?: string
+    ) {
+        console.log("Add to cart - User:", req.user, "MaterialId:", materialId, { selectedSize, selectedColor, selectedStorage });
+        return this.cartService.addToCart(req.user.userId, materialId, { selectedSize, selectedColor, selectedStorage });
     }
 
     @Post('remove')
     @UseGuards(JwtGuard)
-    removeFromCart(@Req() req, @Body('materialId') materialId: string) {
-        return this.cartService.removeFromCart(req.user.userId, materialId);
+    removeFromCart(
+        @Req() req,
+        @Body('materialId') materialId: string,
+        @Body('selectedSize') selectedSize?: string,
+        @Body('selectedColor') selectedColor?: string,
+        @Body('selectedStorage') selectedStorage?: string
+    ) {
+        return this.cartService.removeFromCart(req.user.userId, materialId, { selectedSize, selectedColor, selectedStorage });
     }
 
     @Post('delete')
     @UseGuards(JwtGuard)
-    deleteFromCart(@Req() req, @Body('materialId') materialId: string) {
-        return this.cartService.deleteFromCart(req.user.userId, materialId);
+    deleteFromCart(
+        @Req() req,
+        @Body('materialId') materialId: string,
+        @Body('selectedSize') selectedSize?: string,
+        @Body('selectedColor') selectedColor?: string,
+        @Body('selectedStorage') selectedStorage?: string
+    ) {
+        return this.cartService.deleteFromCart(req.user.userId, materialId, { selectedSize, selectedColor, selectedStorage });
     }
 
     @Get()

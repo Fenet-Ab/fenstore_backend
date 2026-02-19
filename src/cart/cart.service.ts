@@ -5,7 +5,7 @@ import { Prisma } from '@prisma/client';
 @Injectable()
 export class CartService {
     constructor(private prisma: PrismaService) { }
-    async addToCart(userId: string, materialId: string) {
+    async addToCart(userId: string, materialId: string, options?: { selectedSize?: string, selectedColor?: string, selectedStorage?: string }) {
         let cart = await this.prisma.cart.findFirst({
             where: { userId },
         });
@@ -17,7 +17,13 @@ export class CartService {
         }
 
         const existing = await this.prisma.cartItem.findFirst({
-            where: { cartId: cart.id, materialId },
+            where: {
+                cartId: cart.id,
+                materialId,
+                selectedSize: options?.selectedSize || null,
+                selectedColor: options?.selectedColor || null,
+                selectedStorage: options?.selectedStorage || null,
+            },
         });
 
         if (existing) {
@@ -31,11 +37,14 @@ export class CartService {
             data: {
                 cartId: cart.id,
                 materialId,
+                selectedSize: options?.selectedSize,
+                selectedColor: options?.selectedColor,
+                selectedStorage: options?.selectedStorage,
             },
         });
     }
 
-    async removeFromCart(userId: string, materialId: string) {
+    async removeFromCart(userId: string, materialId: string, options?: { selectedSize?: string, selectedColor?: string, selectedStorage?: string }) {
         const cart = await this.prisma.cart.findFirst({
             where: { userId },
         });
@@ -43,7 +52,13 @@ export class CartService {
         if (!cart) return null;
 
         const existing = await this.prisma.cartItem.findFirst({
-            where: { cartId: cart.id, materialId },
+            where: {
+                cartId: cart.id,
+                materialId,
+                selectedSize: options?.selectedSize || null,
+                selectedColor: options?.selectedColor || null,
+                selectedStorage: options?.selectedStorage || null,
+            },
         });
 
         if (!existing) return null;
@@ -60,7 +75,7 @@ export class CartService {
         });
     }
 
-    async deleteFromCart(userId: string, materialId: string) {
+    async deleteFromCart(userId: string, materialId: string, options?: { selectedSize?: string, selectedColor?: string, selectedStorage?: string }) {
         const cart = await this.prisma.cart.findFirst({
             where: { userId },
         });
@@ -68,7 +83,13 @@ export class CartService {
         if (!cart) return null;
 
         const existing = await this.prisma.cartItem.findFirst({
-            where: { cartId: cart.id, materialId },
+            where: {
+                cartId: cart.id,
+                materialId,
+                selectedSize: options?.selectedSize || null,
+                selectedColor: options?.selectedColor || null,
+                selectedStorage: options?.selectedStorage || null,
+            },
         });
 
         if (!existing) return null;

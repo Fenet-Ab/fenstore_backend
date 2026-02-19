@@ -60,13 +60,16 @@ model User {
 }
 
 model OrderItem {
-  id         String   @id @default(uuid())
-  orderId    String
-  materialId String
-  quantity   Int
-  price      Float
-  material   Material @relation(fields: [materialId], references: [id])
-  order      Order    @relation(fields: [orderId], references: [id])
+  id              String   @id @default(uuid())
+  orderId         String
+  materialId      String
+  quantity        Int
+  price           Float
+  selectedSize    String?
+  selectedColor   String?
+  selectedStorage String?
+  material        Material @relation(fields: [materialId], references: [id])
+  order           Order    @relation(fields: [orderId], references: [id])
 }
 
 model Rating {
@@ -116,6 +119,9 @@ model Material {
   averageRating Float?      @default(0)
   ratingCount   Int         @default(0)
   isDeleted     Boolean     @default(false)
+  sizes         String[]    @default([])
+  colors        String[]    @default([])
+  storages      String[]    @default([])
   cartItems     CartItem[]
   likes         Like[]
   category      Category    @relation(fields: [categoryId], references: [id])
@@ -131,10 +137,13 @@ model Cart {
 }
 
 model CartItem {
-  id         String   @id @default(uuid())
-  cartId     String
-  materialId String
-  quantity   Int      @default(1)
-  cart       Cart     @relation(fields: [cartId], references: [id])
-  material   Material @relation(fields: [materialId], references: [id])
+  id              String   @id @default(uuid())
+  cartId          String
+  materialId      String
+  quantity        Int      @default(1)
+  selectedSize    String?
+  selectedColor   String?
+  selectedStorage String?
+  cart            Cart     @relation(fields: [cartId], references: [id])
+  material        Material @relation(fields: [materialId], references: [id])
 }

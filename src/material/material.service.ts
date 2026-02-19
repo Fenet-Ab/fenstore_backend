@@ -61,6 +61,9 @@ export class MaterialService {
         categoryId: body.categoryId,
         price: parseFloat(body.price || '0'),
         imageUrl: imageUrl.publicUrl,
+        sizes: typeof body.sizes === 'string' ? JSON.parse(body.sizes) : (body.sizes || []),
+        colors: typeof body.colors === 'string' ? JSON.parse(body.colors) : (body.colors || []),
+        storages: typeof body.storages === 'string' ? JSON.parse(body.storages) : (body.storages || []),
       },
     });
   }
@@ -70,6 +73,9 @@ export class MaterialService {
       description: body.description,
       categoryId: body.categoryId,
       price: parseFloat(body.price || '0'),
+      sizes: typeof body.sizes === 'string' ? JSON.parse(body.sizes) : (body.sizes || []),
+      colors: typeof body.colors === 'string' ? JSON.parse(body.colors) : (body.colors || []),
+      storages: typeof body.storages === 'string' ? JSON.parse(body.storages) : (body.storages || []),
     };
 
     if (file) {

@@ -65,6 +65,9 @@ export class OrderService {
                         materialId: item.materialId,
                         quantity: item.quantity,
                         price: item.material.price,
+                        selectedSize: item.selectedSize,
+                        selectedColor: item.selectedColor,
+                        selectedStorage: item.selectedStorage,
                     }))
                 }
             },
