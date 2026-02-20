@@ -28,8 +28,8 @@ export class PaymentService {
                     first_name: user.firstName || 'User',
                     last_name: user.lastName || 'FenStore',
                     tx_ref: uniqueTxRef,
-                    callback_url: 'http://localhost:5000/api/payment/verify/' + order.id,
-                    return_url: `http://localhost:3000/orders?verify=${order.id}&tx_ref=${uniqueTxRef}`,
+                    callback_url: 'https://fenshop.vercel.app/api/payment/verify/' + order.id,
+                    return_url: `https://fenshop.vercel.app/orders?verify=${order.id}&tx_ref=${uniqueTxRef}`,
                 },
                 {
                     headers: {
