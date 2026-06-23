@@ -11,9 +11,19 @@ read -p "Enter admin email: " ADMIN_EMAIL
 read -sp "Enter admin password: " ADMIN_PASSWORD
 echo ""
 
-# Create admin user
-echo ""
+# Load ADMIN_SECRET from .env file if it exists
+ADMIN_SECRET_VAL=""
+if [ -f .env ]; then
+    ADMIN_SECRET_VAL=$(grep "^ADMIN_SECRET=" .env | cut -d'=' -f2- | tr -d '"' | tr -d "'")
+fi
+
+# Fallback if not found in .env
+if [ -z "$ADMIN_SECRET_VAL" ]; then
+    ADMIN_SECRET_VAL="fenstore_admin_2024_secure_key"
+fi
+
 echo "Creating admin user..."
+echo ""
 
 RESPONSE=$(curl -s -X POST http://localhost:5000/api/auth/register \
   -H "Content-Type: application/json" \
@@ -21,7 +31,7 @@ RESPONSE=$(curl -s -X POST http://localhost:5000/api/auth/register \
     \"name\": \"$ADMIN_NAME\",
     \"email\": \"$ADMIN_EMAIL\",
     \"password\": \"$ADMIN_PASSWORD\",
-    \"role\": \"ADMIN\"
+    \"adminSecret\": \"$ADMIN_SECRET_VAL\"
   }")
 
 echo "Response: $RESPONSE"
