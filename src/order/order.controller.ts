@@ -2,7 +2,7 @@ import { Controller, Get, Param, Post, Req, UseGuards, Delete, Patch, Body, Quer
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { Roles } from 'src/auth/decorators/roles.decorator';
-import { Role } from '@prisma/client';
+import { Role } from '../auth/enums/role.enum';
 import { OrderService } from './order.service';
 
 @Controller('order')
